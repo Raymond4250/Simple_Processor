@@ -1,0 +1,64 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity inst_mem is
+	port(
+		addr: in std_logic_vector(4 downto 0);
+		op: out std_logic_vector(5 downto 0);
+		rs1: out std_logic_vector(4 downto 0);
+		rs2: out std_logic_vector(4 downto 0);
+		rd: out std_logic_vector(4 downto 0);
+		funct: out std_logic_vector(5 downto 0);
+		immediate:out std_logic_vector(15 downto 0)
+	);
+end inst_mem;
+
+architecture Behavioral of inst_mem is
+	type i_mem is array (0 to 31) of std_logic_vector(31 downto 0);
+	constant i_data: i_mem:= (
+	--  32    25   20   15              0
+	--  | op || rs|| rd|| addr/immediate|   I-Type
+	--  | op ||rs1||rs2|| rd||   ||funct|   R-Type
+		"00100000000000010000000000100000",  -- addi $1, $0, 32	| $1 = 32
+		"00100000000000100000000000001000",  -- addi $2, $0, 8	| $2 = 8
+		"00000000001000100001100000100010",  -- sub $3, $1, $2	| $3 = 24
+		"00000000011000010010000000100000",  -- add $4, $3, $1	| $4 = 56
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000",
+		"00000000000000000000000000000000" 
+		);
+		
+	begin
+	op <= i_data(to_integer(unsigned(addr)))(31 downto 26);
+	rs1 <= i_data(to_integer(unsigned(addr)))(25 downto 21);
+	rs2 <= i_data(to_integer(unsigned(addr)))(20 downto 16);
+	rd <= i_data(to_integer(unsigned(addr)))(15 downto 11);
+	funct <= i_data(to_integer(unsigned(addr)))(5 downto 0);
+	immediate <= i_data(to_integer(unsigned(addr)))(15 downto 0);
+end architecture Behavioral;	
